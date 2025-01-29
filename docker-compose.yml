@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    container_name: node_app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      - PORT=3000
+      - PGUSER=postgres
+      - PGHOST=db
+      - PGDATABASE=postgres
+      - PGPASSWORD=password
+      - PGPORT=5432
+    networks:
+      - app_network
+
+  db:
+    image: postgres:latest
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  db_data:
